@@ -280,7 +280,7 @@ export default function RecipeViewer({ suggestion, streamedText, isStreaming, on
                     {isStreaming ? (
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-4 h-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-                        <span className="text-sm">Loading ingredients...</span>
+                        <span className="text-sm">Getting your ingredients ready...</span>
                       </div>
                     ) : 'Ingredients will appear here'}
                   </div>
@@ -296,7 +296,7 @@ export default function RecipeViewer({ suggestion, streamedText, isStreaming, on
                     {isStreaming && !sections.tips && (
                       <div className="mt-4 flex items-center gap-2 text-sm text-textmuted">
                         <span className="streaming-cursor" />
-                        <span>Chef is still writing...</span>
+                        <span>Writing the rest of the steps...</span>
                       </div>
                     )}
                   </>
@@ -305,7 +305,7 @@ export default function RecipeViewer({ suggestion, streamedText, isStreaming, on
                     {isStreaming ? (
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-4 h-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-                        <span className="text-sm">Chef is writing steps...</span>
+                        <span className="text-sm">Preparing your recipe steps...</span>
                       </div>
                     ) : 'Instructions will appear here'}
                   </div>
@@ -322,7 +322,7 @@ export default function RecipeViewer({ suggestion, streamedText, isStreaming, on
                     {isStreaming ? (
                       <div className="flex items-center justify-center gap-2">
                         <div className="w-4 h-4 border-2 border-primary/20 border-t-primary rounded-full animate-spin" />
-                        <span className="text-sm">Chef's tips coming soon...</span>
+                        <span className="text-sm">Tips are on their way...</span>
                       </div>
                     ) : 'No tips available yet'}
                   </div>
@@ -336,7 +336,7 @@ export default function RecipeViewer({ suggestion, streamedText, isStreaming, on
         {isStreaming && (
           <div className="mt-4 flex items-center gap-2 px-4 py-3 bg-primary-50 rounded-xl border border-primary-100">
             <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-            <span className="text-xs text-primary font-medium">Recipe streaming in real-time via GROQ...</span>
+            <span className="text-xs text-primary font-medium">Your recipe is being written — almost done...</span>
           </div>
         )}
       </div>

@@ -124,7 +124,7 @@ export default function IngredientInput({ ingredients, onAdd, onRemove, onClear 
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
             onFocus={() => inputValue && setShowSuggestions(suggestions.length > 0)}
-            placeholder={ingredients.length === 0 ? 'Type an ingredient and press Enter... (or paste a list)' : 'Add more...'}
+            placeholder={ingredients.length === 0 ? 'Type an ingredient and press Enter... or paste a comma-separated list' : 'Add more ingredients...'}
             className="flex-1 min-w-[160px] border-none outline-none bg-transparent text-textdark placeholder:text-textmuted/60 text-sm py-1"
           />
 
@@ -176,9 +176,8 @@ export default function IngredientInput({ ingredients, onAdd, onRemove, onClear 
       {/* Quick-add chips */}
       {ingredients.length < 8 && (
         <div>
-          <p className="text-xs font-semibold text-textmuted uppercase tracking-wider mb-2 flex items-center gap-1">
-            <Sparkles size={11} className="text-accent-500" />
-            Popular ingredients
+          <p className="text-xs font-semibold text-textmuted uppercase tracking-wider mb-2">
+            Common ingredients — tap to add
           </p>
           <div className="flex flex-wrap gap-2">
             {QUICK_ADD.filter(q => !ingredients.map(i => i.toLowerCase()).includes(q.name.toLowerCase())).map((q) => (

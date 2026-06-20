@@ -3,11 +3,11 @@ import { Clock, ChefHat, Trash2, ArrowLeft, BookOpen, UtensilsCrossed } from 'lu
 
 function EmptySavedState({ onBack }) {
   return (
-    <div className="text-center py-20">
+    <div className="text-center py-16 sm:py-20 px-4">
       <div className="text-6xl mb-6 float-anim">🍽️</div>
       <h3 className="font-display text-2xl font-bold text-textdark mb-3">No saved recipes yet</h3>
       <p className="text-textmuted mb-8 max-w-xs mx-auto text-sm">
-        Find a delicious recipe you love and hit the ❤ button to save it here.
+        Find a recipe you like and tap the heart button to save it here for later.
       </p>
       <button onClick={onBack} className="btn-primary">
         <UtensilsCrossed size={16} />

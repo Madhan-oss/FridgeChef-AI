@@ -77,13 +77,13 @@ Write warmly and encouragingly. Be specific. Make the cook feel confident.`;
 }
 
 export const LOADING_MESSAGES = [
-  "Raiding your fridge... 🕵️",
-  "Consulting the chef... 👨‍🍳",
-  "Tasting the possibilities... 👅",
-  "Combining flavors... ✨",
-  "Checking the pantry... 🫙",
-  "Crafting something delicious... 🍽️",
-  "Whisking up ideas... 🥚",
-  "The AI chef is thinking... 🤔",
-  "Almost there... just seasoning... 🧂",
+  "Checking your ingredients... 🕵️",
+  "Asking the chef... 👨‍🍳",
+  "Looking through the recipe book... 📖",
+  "Putting flavors together... ✨",
+  "Checking what's in the pantry... 🫙",
+  "Finding something delicious... 🍽️",
+  "Thinking about dinner... 🥚",
+  "Almost ready... 🤔",
+  "Just a moment more... 🧂",
 ];

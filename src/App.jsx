@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shuffle, ChefHat, UtensilsCrossed, Zap, ArrowRight, Loader2 } from 'lucide-react'
+import { Shuffle, ChefHat, UtensilsCrossed, Sparkles, ArrowRight, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 import Header from './components/Header.jsx'
@@ -14,8 +14,6 @@ import SavedRecipes from './components/SavedRecipes.jsx'
 import { useGroq } from './hooks/useGroq.js'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
 import { LOADING_MESSAGES } from './utils/prompts.js'
-
-const HARDCODED_API_KEY = '' // Users enter their own key via the modal — stored in localStorage
 
 const DEFAULT_PREFS = {
   cuisine: 'Any',
@@ -33,14 +31,13 @@ const RANDOM_MEALS = ['Breakfast', 'Lunch', 'Dinner', 'Snack']
 function LoadingOverlay({ message }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 gap-6">
-      {/* Spinning chef hat */}
       <div className="relative">
         <div className="w-20 h-20 rounded-full bg-primary-50 border-2 border-primary/20 flex items-center justify-center">
           <span className="text-4xl animate-pulse-slow">🍳</span>
         </div>
         <div className="absolute inset-0 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
       </div>
-      <p className="font-display text-xl text-textdark font-semibold">{message}</p>
+      <p className="font-display text-xl text-textdark font-semibold text-center px-4">{message}</p>
       <div className="flex gap-1.5">
         {[0, 1, 2].map(i => (
           <div key={i} className="w-2 h-2 bg-primary rounded-full animate-bounce"
@@ -53,15 +50,15 @@ function LoadingOverlay({ message }) {
 
 function HowItWorksSection() {
   const steps = [
-    { emoji: '🥕', title: 'Add Ingredients', desc: 'Type what you have in your fridge and pantry' },
-    { emoji: '⚡', title: 'AI Crafts Recipes', desc: "GROQ's lightning AI suggests perfect matches instantly" },
-    { emoji: '🍽️', title: 'Cook & Enjoy', desc: 'Get a full recipe streaming live, step by step' },
+    { emoji: '🥕', title: 'Add Your Ingredients', desc: 'Type what you have in your fridge and pantry — even leftovers count.' },
+    { emoji: '✨', title: 'Get Recipe Ideas', desc: 'We suggest three dishes you can make right now, with a match score for each.' },
+    { emoji: '🍽️', title: 'Cook and Enjoy', desc: 'Open a recipe, follow the step-by-step guide, and get cooking.' },
   ]
 
   return (
-    <div className="mt-20 mb-8">
+    <div className="mt-16 mb-8">
       <p className="text-xs font-semibold text-textmuted uppercase tracking-widest text-center mb-8">How it works</p>
-      <div className="grid sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {steps.map((s, i) => (
           <motion.div key={s.title}
             initial={{ opacity: 0, y: 20 }}
@@ -79,12 +76,11 @@ function HowItWorksSection() {
 }
 
 export default function App() {
-  // State
-  const [apiKey, setApiKey] = useLocalStorage('fridgechef_groq_key', HARDCODED_API_KEY)
+  const [apiKey, setApiKey] = useLocalStorage('fridgechef_groq_key', '')
   const [showApiModal, setShowApiModal] = useState(false)
   const [ingredients, setIngredients] = useLocalStorage('fridgechef_last_ingredients', [])
   const [prefs, setPrefs] = useState(DEFAULT_PREFS)
-  const [screen, setScreen] = useState('hero') // hero | builder | suggestions | recipe | saved
+  const [screen, setScreen] = useState('hero')
   const [suggestions, setSuggestions] = useState([])
   const [loadingMsg, setLoadingMsg] = useState('')
   const [selectedRecipe, setSelectedRecipe] = useState(null)
@@ -93,14 +89,12 @@ export default function App() {
 
   const { isLoading, isStreaming, getSuggestions, streamRecipe } = useGroq()
 
-  // If no API key stored, show modal
   useEffect(() => {
     if (!apiKey) {
       setShowApiModal(true)
     }
   }, [apiKey])
 
-  // Move from hero to builder when ingredient added
   const handleAddIngredient = (name) => {
     if (!ingredients.includes(name)) {
       const updated = [...ingredients, name]
@@ -163,7 +157,7 @@ export default function App() {
       cookingTime: ['Under 15 min', '30 min', '1 hour', 'No limit'][Math.floor(Math.random() * 4)],
     }
     setPrefs(randomPrefs)
-    toast.success(`🎲 Surprise! Trying ${randomPrefs.cuisine} ${randomPrefs.mealType}...`)
+    toast.success(`🎲 Picking a random recipe — let's see what we get!`)
     await handleFindRecipesWithPrefs(randomPrefs)
   }
 
@@ -233,7 +227,7 @@ export default function App() {
       setSavedRecipes(savedRecipes.map(r =>
         r.id === suggestion.id ? { ...r, fullRecipe: recipeText } : r
       ))
-      toast.success('Updated saved recipe with full text')
+      toast.success('Recipe saved to your collection')
     } else {
       const saved = {
         ...suggestion,
@@ -261,14 +255,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* API Key Modal */}
       <AnimatePresence>
         {showApiModal && (
           <ApiKeyModal onSave={(key) => { setApiKey(key); setShowApiModal(false) }} />
         )}
       </AnimatePresence>
 
-      {/* Header */}
       <Header
         savedCount={savedRecipes.length}
         currentScreen={screen}
@@ -276,7 +268,6 @@ export default function App() {
         onChangeKey={() => setShowApiModal(true)}
       />
 
-      {/* Main content */}
       <main>
         <AnimatePresence mode="wait">
 
@@ -288,26 +279,26 @@ export default function App() {
               exit={{ opacity: 0, y: -16 }}
               className="bg-hero-pattern min-h-[calc(100vh-64px)]"
             >
-              <div className="max-w-3xl mx-auto px-4 pt-16 sm:pt-24 pb-12">
+              <div className="max-w-3xl mx-auto px-4 pt-12 sm:pt-20 pb-12">
                 {/* Hero headline */}
                 <motion.div
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
-                  className="text-center mb-12"
+                  className="text-center mb-10"
                 >
                   <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-50 border border-primary-100 rounded-full text-sm font-medium text-primary mb-6">
-                    <Zap size={14} className="fill-primary" />
-                    Powered by GROQ — World's fastest AI
+                    <Sparkles size={14} />
+                    Quick recipe ideas from what you already have
                   </div>
 
-                  <h1 className="font-display text-5xl sm:text-6xl lg:text-7xl font-bold text-textdark leading-[1.1] mb-5">
+                  <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-textdark leading-[1.1] mb-5">
                     What's in your{' '}
                     <span className="text-gradient">fridge?</span>
                   </h1>
 
-                  <p className="text-textmuted text-lg sm:text-xl max-w-xl mx-auto leading-relaxed">
-                    Add your ingredients and let AI craft the perfect recipe for you — streamed in real time.
+                  <p className="text-textmuted text-base sm:text-lg max-w-xl mx-auto leading-relaxed">
+                    Tell us what ingredients you have and we'll suggest three dishes you can make right now — with full step-by-step recipes.
                   </p>
                 </motion.div>
 
@@ -316,7 +307,7 @@ export default function App() {
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
-                  className="card p-6 mb-6"
+                  className="card p-4 sm:p-6 mb-6"
                 >
                   <IngredientInput
                     ingredients={ingredients}
@@ -337,20 +328,20 @@ export default function App() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -16 }}
-              className="max-w-5xl mx-auto px-4 py-8"
+              className="max-w-5xl mx-auto px-4 py-6 sm:py-8"
             >
-              <div className="mb-6">
-                <h2 className="font-display text-3xl font-bold text-textdark mb-1">Build your recipe</h2>
-                <p className="text-textmuted">Add more ingredients and set your preferences</p>
+              <div className="mb-5">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-textdark mb-1">Your ingredients</h2>
+                <p className="text-textmuted text-sm sm:text-base">Add more items and set your cooking preferences below</p>
               </div>
 
-              <div className="grid lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
                 {/* Ingredients panel */}
-                <div className="lg:col-span-3">
-                  <div className="card p-5 sm:p-6 mb-4">
-                    <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2">
-                      <UtensilsCrossed size={16} className="text-primary" />
-                      Your Ingredients
+                <div className="lg:col-span-3 order-1">
+                  <div className="card p-4 sm:p-6">
+                    <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2 text-sm sm:text-base">
+                      <UtensilsCrossed size={16} className="text-primary shrink-0" />
+                      What you have
                     </h3>
                     <IngredientInput
                       ingredients={ingredients}
@@ -362,11 +353,11 @@ export default function App() {
                 </div>
 
                 {/* Preferences panel */}
-                <div className="lg:col-span-2">
-                  <div className="card p-5 sm:p-6">
-                    <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2">
-                      <ChefHat size={16} className="text-primary" />
-                      Preferences
+                <div className="lg:col-span-2 order-2">
+                  <div className="card p-4 sm:p-6">
+                    <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2 text-sm sm:text-base">
+                      <ChefHat size={16} className="text-primary shrink-0" />
+                      Cooking preferences
                     </h3>
                     <PreferencePanel prefs={prefs} onChange={setPrefs} />
                   </div>
@@ -374,7 +365,7 @@ export default function App() {
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <div className="flex flex-col sm:flex-row gap-3 mt-5">
                 <button
                   id="find-recipes-btn"
                   onClick={handleFindRecipes}
@@ -383,13 +374,13 @@ export default function App() {
                 >
                   {isLoading ? (
                     <>
-                      <Loader2 size={18} className="animate-spin" />
-                      {loadingMsg || 'Finding recipes...'}
+                      <Loader2 size={18} className="animate-spin shrink-0" />
+                      <span className="truncate">{loadingMsg || 'Finding recipes...'}</span>
                     </>
                   ) : (
                     <>
-                      🍳 Find My Recipes
-                      <ArrowRight size={18} />
+                      🍳 Find Recipes
+                      <ArrowRight size={18} className="shrink-0" />
                     </>
                   )}
                 </button>
@@ -397,10 +388,10 @@ export default function App() {
                   id="surprise-me-btn"
                   onClick={handleSurpriseMe}
                   disabled={isLoading || ingredients.length === 0}
-                  className="btn-secondary py-4 sm:w-auto px-8 text-base"
+                  className="btn-secondary py-4 sm:w-auto sm:px-8 text-base"
                 >
-                  <Shuffle size={16} />
-                  Surprise Me
+                  <Shuffle size={16} className="shrink-0" />
+                  Pick for Me
                 </button>
               </div>
             </motion.div>
@@ -412,28 +403,29 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="max-w-5xl mx-auto px-4 py-8"
+              className="max-w-5xl mx-auto px-4 py-6 sm:py-8"
             >
               {isLoading ? (
                 <LoadingOverlay message={loadingMsg} />
               ) : (
                 <>
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
                     <div>
-                      <h2 className="font-display text-3xl font-bold text-textdark mb-1">
+                      <h2 className="font-display text-2xl sm:text-3xl font-bold text-textdark mb-1">
                         Here's what you can make
                       </h2>
                       <p className="text-textmuted text-sm">
-                        Based on {ingredients.length} ingredient{ingredients.length !== 1 ? 's' : ''} · {prefs.cuisine !== 'Any' ? prefs.cuisine : 'Any cuisine'}
+                        Using {ingredients.length} ingredient{ingredients.length !== 1 ? 's' : ''}
+                        {prefs.cuisine !== 'Any' ? ` · ${prefs.cuisine} food` : ''}
                       </p>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 shrink-0">
                       <button
                         id="back-to-builder-btn"
                         onClick={() => setScreen('builder')}
                         className="btn-ghost text-sm"
                       >
-                        Edit Ingredients
+                        Edit ingredients
                       </button>
                       <button
                         id="search-again-btn"
@@ -442,12 +434,12 @@ export default function App() {
                         className="btn-secondary text-sm px-4 py-2"
                       >
                         <Shuffle size={14} />
-                        Refresh
+                        Try again
                       </button>
                     </div>
                   </div>
 
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                     {suggestions.map((s, i) => (
                       <SuggestionCard
                         key={s.id || i}
@@ -497,11 +489,10 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border mt-auto py-6 text-center text-xs text-textmuted">
-        <span>Made with ❤ · </span>
-        <span>Powered by </span>
-        <span className="font-semibold text-primary">GROQ</span>
-        <span> · No data stored on servers</span>
+      <footer className="border-t border-border mt-auto py-6 text-center text-xs text-textmuted px-4">
+        <span>Made with ❤ by FridgeChef</span>
+        <span className="mx-2">·</span>
+        <span>Your data stays on your device</span>
       </footer>
     </div>
   )

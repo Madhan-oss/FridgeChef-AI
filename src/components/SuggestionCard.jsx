@@ -10,8 +10,7 @@ function MatchScoreBadge({ score }) {
       className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
       style={{ background: bgColor, color }}
     >
-      <Zap size={10} style={{ color }} />
-      {score}% match
+      {score}% matched
     </div>
   )
 }
@@ -81,7 +80,7 @@ export default function SuggestionCard({ suggestion, onView, onSave, isSaved, in
         <div className="mb-5 space-y-2">
           {ingredientsUsed.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">✓ You have</p>
+              <p className="text-xs font-semibold text-secondary uppercase tracking-wider mb-1.5">✓ You already have</p>
               <div className="flex flex-wrap gap-1.5">
                 {ingredientsUsed.map(ing => (
                   <span key={ing} className="px-2 py-0.5 bg-secondary-50 text-secondary-700 border border-secondary-100 rounded-full text-xs font-medium capitalize">
@@ -93,7 +92,7 @@ export default function SuggestionCard({ suggestion, onView, onSave, isSaved, in
           )}
           {extraIngredients.length > 0 && (
             <div>
-              <p className="text-xs font-semibold text-textmuted uppercase tracking-wider mb-1.5">+ Need to buy</p>
+              <p className="text-xs font-semibold text-textmuted uppercase tracking-wider mb-1.5">+ You'll need to buy</p>
               <div className="flex flex-wrap gap-1.5">
                 {extraIngredients.map(ing => (
                   <span key={ing} className="px-2 py-0.5 bg-surface-100 text-textmuted border border-border rounded-full text-xs font-medium capitalize">

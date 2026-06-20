@@ -24,9 +24,9 @@ export default function Header({ savedCount, currentScreen, onShowSaved, onChang
           <div className="hidden md:flex items-center gap-2 text-sm text-textmuted">
             <Utensils size={14} className="text-primary" />
             <span className="font-medium">
-              {currentScreen === 'builder' && 'Add Ingredients'}
-              {currentScreen === 'suggestions' && 'Recipe Suggestions'}
-              {currentScreen === 'recipe' && 'Full Recipe'}
+            {currentScreen === 'builder' && 'Add Ingredients'}
+              {currentScreen === 'suggestions' && 'Recipe Ideas'}
+              {currentScreen === 'recipe' && 'Recipe'}
               {currentScreen === 'saved' && 'Saved Recipes'}
             </span>
           </div>
