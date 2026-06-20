@@ -1,0 +1,191 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-surface font-body text-textdark antialiased;
+    background-color: #FDFCFB;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    background-color: rgba(255, 107, 53, 0.2);
+    color: #1A1008;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #FFF8F4;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #F0EAE4;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #E0D5CC;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-primary text-white font-semibold rounded-full transition-all duration-200 hover:bg-primary-600 hover:shadow-glow active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-surface-100 text-primary font-semibold rounded-full border border-primary/20 transition-all duration-200 hover:bg-primary/5 hover:border-primary/40 active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-textmuted font-medium rounded-xl transition-all duration-200 hover:bg-surface-100 hover:text-textdark active:scale-95;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl border border-border shadow-card;
+  }
+
+  .card-hover {
+    @apply card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 cursor-pointer;
+  }
+
+  .ingredient-tag {
+    @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-primary-50 text-primary-700 border border-primary-100 rounded-full text-sm font-mono font-medium;
+  }
+
+  .section-title {
+    @apply font-display text-2xl font-bold text-textdark;
+  }
+
+  .input-base {
+    @apply w-full px-4 py-3 bg-white border border-border rounded-xl text-textdark placeholder:text-textmuted/60 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/40 transition-all duration-200;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold;
+  }
+
+  .badge-easy {
+    @apply badge bg-secondary-50 text-secondary-700;
+  }
+
+  .badge-medium {
+    @apply badge bg-accent-50 text-accent-700;
+  }
+
+  .badge-hard {
+    @apply badge bg-red-50 text-red-700;
+  }
+
+  .streaming-cursor {
+    @apply inline-block w-0.5 h-4 bg-primary ml-0.5 align-middle;
+    animation: blink 1s step-end infinite;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #F7C948 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-green {
+    background: linear-gradient(135deg, #2D9C6B 0%, #F7C948 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(circle, #F0EAE4 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .bg-hero-pattern {
+    background-color: #FDFCFB;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(255, 107, 53, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(247, 201, 72, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 60% 80%, rgba(45, 156, 107, 0.06) 0%, transparent 40%);
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(90deg, #f5ede5 25%, #ffe8d6 50%, #f5ede5 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+.float-anim {
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Recipe checklist custom styling */
+.recipe-checkbox {
+  accent-color: #FF6B35;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+/* Custom range slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: #F0EAE4;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #FF6B35;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
+  transition: box-shadow 0.2s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, opacity, box-shadow, transform;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
