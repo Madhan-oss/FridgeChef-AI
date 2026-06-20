@@ -5,9 +5,12 @@ import { buildSuggestionsPrompt, buildRecipePrompt } from '../utils/prompts.js'
 
 const MODEL = 'llama-3.3-70b-versatile'
 
-function getGroqClient(apiKey) {
+// Read the API key from the Vite environment variable set in Vercel
+const API_KEY = import.meta.env.VITE_GROQ_API_KEY || ''
+
+function getGroqClient() {
   return new Groq({
-    apiKey,
+    apiKey: API_KEY,
     dangerouslyAllowBrowser: true,
   })
 }
@@ -17,15 +20,15 @@ export function useGroq() {
   const [streamingText, setStreamingText] = useState('')
   const [isStreaming, setIsStreaming] = useState(false)
 
-  const getSuggestions = useCallback(async (params, apiKey) => {
-    if (!apiKey) {
-      toast.error('Please enter your GROQ API key first')
+  const getSuggestions = useCallback(async (params) => {
+    if (!API_KEY) {
+      toast.error('Recipe service is not configured. Please contact the site owner.')
       return null
     }
 
     setIsLoading(true)
     try {
-      const groq = getGroqClient(apiKey)
+      const groq = getGroqClient()
       const prompt = buildSuggestionsPrompt(params)
 
       const response = await groq.chat.completions.create({
@@ -40,19 +43,19 @@ export function useGroq() {
       // Extract JSON from response
       const jsonMatch = content.match(/\[[\s\S]*\]/)
       if (!jsonMatch) {
-        throw new Error('Invalid response format from AI')
+        throw new Error('Could not read the recipe suggestions. Please try again.')
       }
 
       const suggestions = JSON.parse(jsonMatch[0])
       return suggestions
     } catch (err) {
-      console.error('GROQ suggestions error:', err)
+      console.error('Recipe suggestions error:', err)
       if (err.message?.includes('401') || err.message?.includes('Unauthorized') || err.message?.includes('Invalid API Key')) {
-        toast.error('Invalid API key. Please check your GROQ key.')
+        toast.error('Recipe service key is invalid. Please contact the site owner.')
       } else if (err.message?.includes('429')) {
-        toast.error('Rate limit reached. Please wait a moment and try again.')
+        toast.error('Too many requests at once. Please wait a moment and try again.')
       } else {
-        toast.error(err.message || 'Failed to get suggestions. Please try again.')
+        toast.error(err.message || 'Could not get recipe suggestions. Please try again.')
       }
       return null
     } finally {
@@ -60,9 +63,9 @@ export function useGroq() {
     }
   }, [])
 
-  const streamRecipe = useCallback(async (params, apiKey, onChunk) => {
-    if (!apiKey) {
-      toast.error('Please enter your GROQ API key first')
+  const streamRecipe = useCallback(async (params, onChunk) => {
+    if (!API_KEY) {
+      toast.error('Recipe service is not configured. Please contact the site owner.')
       return
     }
 
@@ -70,7 +73,7 @@ export function useGroq() {
     setStreamingText('')
 
     try {
-      const groq = getGroqClient(apiKey)
+      const groq = getGroqClient()
       const prompt = buildRecipePrompt(params)
 
       const stream = await groq.chat.completions.create({
@@ -93,11 +96,11 @@ export function useGroq() {
 
       return fullText
     } catch (err) {
-      console.error('GROQ streaming error:', err)
+      console.error('Recipe loading error:', err)
       if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {
-        toast.error('Invalid API key. Please check your GROQ key.')
+        toast.error('Recipe service key is invalid. Please contact the site owner.')
       } else {
-        toast.error('Failed to stream recipe. Please try again.')
+        toast.error('Could not load this recipe. Please try again.')
       }
       return null
     } finally {

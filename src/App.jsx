@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Shuffle, ChefHat, UtensilsCrossed, Sparkles, ArrowRight, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 
 import Header from './components/Header.jsx'
-import ApiKeyModal from './components/ApiKeyModal.jsx'
 import IngredientInput from './components/IngredientInput.jsx'
 import PreferencePanel from './components/PreferencePanel.jsx'
 import SuggestionCard from './components/SuggestionCard.jsx'
@@ -76,8 +75,6 @@ function HowItWorksSection() {
 }
 
 export default function App() {
-  const [apiKey, setApiKey] = useLocalStorage('fridgechef_groq_key', '')
-  const [showApiModal, setShowApiModal] = useState(false)
   const [ingredients, setIngredients] = useLocalStorage('fridgechef_last_ingredients', [])
   const [prefs, setPrefs] = useState(DEFAULT_PREFS)
   const [screen, setScreen] = useState('hero')
@@ -88,12 +85,6 @@ export default function App() {
   const [savedRecipes, setSavedRecipes] = useLocalStorage('fridgechef_saved', [])
 
   const { isLoading, isStreaming, getSuggestions, streamRecipe } = useGroq()
-
-  useEffect(() => {
-    if (!apiKey) {
-      setShowApiModal(true)
-    }
-  }, [apiKey])
 
   const handleAddIngredient = (name) => {
     if (!ingredients.includes(name)) {
@@ -135,7 +126,7 @@ export default function App() {
       skillLevel: SKILL_MAP[prefs.skillIndex],
       cookingTime: prefs.cookingTime,
       servings: prefs.servings,
-    }, apiKey)
+    })
 
     clearInterval(interval)
     if (result && result.length > 0) {
@@ -178,7 +169,7 @@ export default function App() {
       skillLevel: SKILL_MAP[usePrefs.skillIndex],
       cookingTime: usePrefs.cookingTime,
       servings: usePrefs.servings,
-    }, apiKey)
+    })
 
     clearInterval(interval)
     if (result && result.length > 0) {
@@ -199,7 +190,7 @@ export default function App() {
       servings: prefs.servings,
       skillLevel: SKILL_MAP[prefs.skillIndex],
       cuisine: suggestion.cuisine,
-    }, apiKey, (text) => {
+    }, (text) => {
       setStreamedRecipe(text)
     })
   }
@@ -255,17 +246,10 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-surface">
-      <AnimatePresence>
-        {showApiModal && (
-          <ApiKeyModal onSave={(key) => { setApiKey(key); setShowApiModal(false) }} />
-        )}
-      </AnimatePresence>
-
       <Header
         savedCount={savedRecipes.length}
         currentScreen={screen}
         onShowSaved={() => setScreen('saved')}
-        onChangeKey={() => setShowApiModal(true)}
       />
 
       <main>
@@ -280,7 +264,6 @@ export default function App() {
               className="bg-hero-pattern min-h-[calc(100vh-64px)]"
             >
               <div className="max-w-3xl mx-auto px-4 pt-12 sm:pt-20 pb-12">
-                {/* Hero headline */}
                 <motion.div
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -302,7 +285,6 @@ export default function App() {
                   </p>
                 </motion.div>
 
-                {/* Hero input */}
                 <motion.div
                   initial={{ opacity: 0, y: 24 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -336,7 +318,6 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-                {/* Ingredients panel */}
                 <div className="lg:col-span-3 order-1">
                   <div className="card p-4 sm:p-6">
                     <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2 text-sm sm:text-base">
@@ -352,7 +333,6 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Preferences panel */}
                 <div className="lg:col-span-2 order-2">
                   <div className="card p-4 sm:p-6">
                     <h3 className="font-semibold text-textdark mb-4 flex items-center gap-2 text-sm sm:text-base">
@@ -364,7 +344,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* CTAs */}
               <div className="flex flex-col sm:flex-row gap-3 mt-5">
                 <button
                   id="find-recipes-btn"
@@ -488,7 +467,6 @@ export default function App() {
         </AnimatePresence>
       </main>
 
-      {/* Footer */}
       <footer className="border-t border-border mt-auto py-6 text-center text-xs text-textmuted px-4">
         <span>Made with ❤ by FridgeChef</span>
         <span className="mx-2">·</span>
